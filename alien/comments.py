@@ -90,7 +90,7 @@ class UserComments(IterableResults):
     def __init__(self, author, max_items=100):
         self.author = author
         self.max_items = max_items
-        self.results = [Comment(element) for element in self._get_user_comments_elements()]
+        self.results = [Comment(element) for element in self._get_user_comments_elements()][::-1]
 
     def _get_user_comments_elements(self):
         try:
@@ -114,7 +114,8 @@ class SubredditComments(IterableResults):
     def __init__(self, subreddit, max_items=100):
         self.subreddit = get_fixed_subreddit(subreddit)
         self.max_items = max_items
-        self.results = [Comment(element) for element in self._get_subreddit_comments_elements()]
+        self.results = [Comment(element)
+                        for element in self._get_subreddit_comments_elements()][::-1]
 
     def _get_subreddit_comments_elements(self):
         try:
@@ -138,7 +139,7 @@ class SubmissionComments(IterableResults):
         self.submission = submission
         self.max_items = max_items
         elements = self._get_submission_comments_elements()
-        self.results = [Comment(element) for element in elements]
+        self.results = [Comment(element) for element in elements][::-1]
 
     def _get_submission_comments_elements(self):
         try:

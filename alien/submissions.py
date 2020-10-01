@@ -99,7 +99,8 @@ class UserSubmissions(IterableResults):
     def __init__(self, author, max_items=100):
         self.author = author
         self.max_items = max_items
-        self.results = [Submission(element) for element in self._get_user_submissions_elements()]
+        self.results = [Submission(element)
+                        for element in self._get_user_submissions_elements()][::-1]
 
     def _get_user_submissions_elements(self):
         try:
@@ -126,7 +127,7 @@ class SubredditSubmissions(IterableResults):
         self.results = [
             Submission(element, self.subreddit)
             for element in self._get_subreddit_submissions_elements()
-        ]
+        ][::-1]
 
     def _get_subreddit_submissions_elements(self):
         try:
