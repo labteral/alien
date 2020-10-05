@@ -9,7 +9,7 @@ class Comment:
         self.element = element
 
     @property
-    def subreddit(self):
+    def subreddit(self) -> str:
         return 'r/' + self.element.xpath("."
             + "/div[@class='entry unvoted']"
             + "/div[contains(@class, 'options_expando')]"
@@ -18,7 +18,7 @@ class Comment:
             .split("/")[2]
 
     @property
-    def submission_id(self):
+    def submission_id(self) -> str:
         return self.element.xpath("."
             + "/div[@class='entry unvoted']"
             + "/div[contains(@class, 'options_expando')]"
@@ -27,12 +27,12 @@ class Comment:
             .split("/")[4]
 
     @property
-    def submission_title(self):
+    def submission_title(self) -> str:
         return self.element.xpath("." +
                                   "/a[@class='title']/text()")[0].encode('utf-8').decode('utf-8')
 
     @property
-    def body(self):
+    def body(self) -> str:
         words = " ".join(text for text in self.element.xpath("." + "/div[@class='entry unvoted']" +
                                                              "/form[@class='usertext']" +
                                                              "/div[@class='usertext-body']" +
@@ -40,17 +40,21 @@ class Comment:
         return " ".join(words)
 
     @property
-    def id(self):
+    def id(self) -> str:
         return get_element_id(self.element)
 
     @property
-    def url(self):
+    def comment_id(self) -> str:
+        return self.id
+
+    @property
+    def url(self) -> str:
         return 'https://reddit.com' + self.element.xpath(
             "." + "/div[@class='entry unvoted']" + "/div[@class='clear options_expando hidden']" +
             "/a" + "/@href")[1]
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> int:
         """ This function works only with a "thing" element of a given author
         submissions page (it does not work with a certain submission endpoint)
         """
@@ -62,7 +66,7 @@ class Comment:
         return get_timestamp_from_text(time_ago)
 
     @property
-    def author(self):
+    def author(self) -> str:
         try:
             return self.element.xpath(
                 "." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" +
@@ -72,7 +76,12 @@ class Comment:
             return
 
     @property
-    def dict(self):
+    def profile_post(self) -> bool:
+        split_subreddit = self.subreddit.split('_')
+        return len(split_subreddit) > 1 and split_subreddit[1] == self.author
+
+    @property
+    def dict(self) -> dict:
         return {
             'comment_id': self.id,
             'submission_id': self.submission_id,
