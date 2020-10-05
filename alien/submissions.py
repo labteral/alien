@@ -12,17 +12,21 @@ class Submission:
         self._subreddit = subreddit
 
     @property
-    def title(self):
+    def title(self) -> str:
         return self.element.xpath("." + "/div[@class='entry unvoted']" + "/p[@class='title']" +
                                   "/a[@class='may-blank']" +
                                   "/text()")[0].encode('utf-8').decode('utf-8')
 
     @property
-    def id(self):
+    def id(self) -> str:
         return get_element_id(self.element)
 
     @property
-    def subreddit(self):
+    def submission_id(self) -> str:
+        return self.id
+
+    @property
+    def subreddit(self) -> str:
         # Works only with the submissions page of a given author
         if self._subreddit:
             return self._subreddit
@@ -41,7 +45,7 @@ class Submission:
             return
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> int:
         retrieved_datetime = self.element.xpath("." + "/div[@class='entry unvoted']" +
                                                 "/div[@class='tagline']" + "/span" +
                                                 "/time/@datetime")[0]
@@ -50,7 +54,7 @@ class Submission:
             .replace(tzinfo=timezone.utc).timestamp())
 
     @property
-    def author(self):
+    def author(self) -> str:
         try:
             return self.element.xpath(
                 "." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" + "/span" +
@@ -60,17 +64,19 @@ class Submission:
             return
 
     @property
-    def comments_count(self):
-        return self.element.xpath("." + "/div[@class='commentcount']" + "/a" +
-                                  "/text()")[0].encode('utf-8').decode('utf-8')
+    def comments_count(self) -> int:
+        return int(
+            self.element.xpath("." + "/div[@class='commentcount']" + "/a" +
+                               "/text()")[0].encode('utf-8').decode('utf-8'))
 
     @property
-    def score(self):
-        return self.element.xpath("." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" +
-                                  "/span" + "/span[@class='score unvoted']" + "/@title")[0]
+    def score(self) -> int:
+        return int(
+            self.element.xpath("." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" +
+                               "/span" + "/span[@class='score unvoted']" + "/@title")[0])
 
     @property
-    def body(self):
+    def body(self) -> str:
         words = " ".join(text for text in self.element.xpath("." + "/div[@class='expando']" +
                                                              "/form[@class='usertext']" +
                                                              "/div[@class='usertext-body']" +
@@ -78,11 +84,16 @@ class Submission:
         return " ".join(words)
 
     @property
-    def url(self):
+    def url(self) -> str:
         return f'https://www.reddit.com/{self.subreddit}/comments/{self.id}/'
 
     @property
-    def dict(self):
+    def profile_post(self) -> bool:
+        split_subreddit = self.subreddit.split('_')
+        return len(split_subreddit) > 1 and split_subreddit[1] == self.author
+
+    @property
+    def dict(self) -> str:
         return {
             'submission_id': self.id,
             'type': 'submission',
