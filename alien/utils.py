@@ -3,11 +3,12 @@
 
 from random import randint
 from datetime import timedelta, datetime
-from urllib.request import Request
 import re
 from lxml import etree
 import lxml.html
-import gzip
+import urllib3
+
+session = urllib3.PoolManager()
 
 
 def return_on_error(method):
@@ -47,7 +48,7 @@ def get_random_user_agent():
     return user_agent
 
 
-def get_request(url):
+def get_response(url):
     headers = {
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'accept-encoding': 'gzip, deflate, br',
@@ -59,13 +60,12 @@ def get_request(url):
         'origin': 'https://www.reddit.com/'
     }
     headers['user-agent'] = get_random_user_agent()
-    return Request(url=url, headers=headers)
+    request = session.request('GET', url=url, headers=headers)
+    return request.data.decode('utf-8')
 
 
 def get_lxml_from_response(response):
-    if response.info().get('Content-Encoding') == 'gzip':
-        html_string = gzip.GzipFile(fileobj=response).read()
-        return lxml.html.document_fromstring(html_string)
+    return lxml.html.document_fromstring(response)
 
 
 def get_fixed_subreddit(subreddit):

@@ -1,9 +1,8 @@
 from datetime import timezone
-from .utils import (get_element_id, get_lxml_from_response, get_request, get_fixed_subreddit,
+from .utils import (get_element_id, get_lxml_from_response, get_response, get_fixed_subreddit,
                     IterableResults, return_on_error)
 import dateutil.parser
-import logging
-from urllib.request import urlopen
+import traceback
 
 
 class Submission:
@@ -128,18 +127,14 @@ class UserSubmissions(IterableResults):
         try:
             doc = self._get_user_submissions_lxml()
             return doc.xpath("//div[contains(@class, 'thing')]")
-        except Exception as e:
-            logging.error(str(e))
+        except Exception:
+            traceback.print_exc()
             return []
 
     def _get_user_submissions_lxml(self):
-        response = urlopen(get_request(self._get_user_submissions_url()))
+        response = get_response('https://www.reddit.com/user/' + self.author +
+                                '/submitted/.compact?limit=' + str(self.max_items))
         return get_lxml_from_response(response)
-
-    def _get_user_submissions_url(self):
-        url = ('https://www.reddit.com/user/' + self.author + '/submitted/.compact?limit=' +
-               str(self.max_items))
-        return url
 
 
 class SubredditSubmissions(IterableResults):
@@ -155,14 +150,11 @@ class SubredditSubmissions(IterableResults):
         try:
             doc = self._get_subreddit_submissions_lxml()
             return doc.xpath("//div[contains(@class, 'thing')]")
-        except Exception as e:
-            logging.error(str(e))
+        except Exception:
+            traceback.print_exc()
             return []
 
-    def _get_subreddit_submissions_lxml(self):
-        response = urlopen(get_request(self._get_subreddit_submissions_url()))
+    def _get_subreddit_submissions_lxml(self, sort='new'):
+        response = get_response(
+            f'https://www.reddit.com/{self.subreddit}/{sort}/.compact?limit={self.max_items}')
         return get_lxml_from_response(response)
-
-    def _get_subreddit_submissions_url(self, sort='new'):
-        url = f'https://www.reddit.com/{self.subreddit}/{sort}/.compact?limit={self.max_items}'
-        return url

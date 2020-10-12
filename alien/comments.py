@@ -1,7 +1,7 @@
-from .utils import (get_timestamp_from_text, get_lxml_from_response, get_element_id, get_request,
+from .utils import (get_timestamp_from_text, get_lxml_from_response, get_element_id, get_response,
                     get_fixed_subreddit, IterableResults, return_on_error)
 import logging
-from urllib.request import urlopen
+import traceback
 
 
 class Comment:
@@ -108,18 +108,14 @@ class UserComments(IterableResults):
         try:
             doc = self._get_user_comments_lxml()
             return doc.xpath("//div[contains(@class, 'thing')]")
-        except Exception as e:
-            logging.warn(str(e))
+        except Exception:
+            traceback.print_exc()
             return []
 
     def _get_user_comments_lxml(self):
-        response = urlopen(get_request(self._get_user_comments_url()))
+        response = get_response('https://www.reddit.com/user/' + self.author +
+                                '/comments/.compact?limit=' + str(self.max_items))
         return get_lxml_from_response(response)
-
-    def _get_user_comments_url(self):
-        url = ('https://www.reddit.com/user/' + self.author + '/comments/.compact?limit=' +
-               str(self.max_items))
-        return url
 
 
 class SubredditComments(IterableResults):
@@ -133,17 +129,14 @@ class SubredditComments(IterableResults):
         try:
             doc = self._get_subreddit_comments_lxml()
             return doc.xpath("//div[contains(@class, 'thing')]")
-        except Exception as e:
-            logging.warn(str(e))
+        except Exception:
+            traceback.print_exc()
             return []
 
     def _get_subreddit_comments_lxml(self):
-        response = urlopen(get_request(self._get_subreddit_comments_url()))
+        response = get_response(
+            f'https://www.reddit.com/{self.subreddit}/comments/.compact?limit={self.max_items}')
         return get_lxml_from_response(response)
-
-    def _get_subreddit_comments_url(self):
-        url = f'https://www.reddit.com/{self.subreddit}/comments/.compact?limit={self.max_items}'
-        return url
 
 
 class SubmissionComments(IterableResults):
@@ -157,15 +150,12 @@ class SubmissionComments(IterableResults):
         try:
             doc = self._get_submission_lxml()
             return doc.xpath("//div[contains(@class, 'thing')]")
-        except Exception as e:
-            logging.warn(str(e))
+        except Exception:
+            traceback.print_exc()
             return []
 
     def _get_submission_lxml(self):
-        response = urlopen(get_request(self._get_submission_url()))
+        response = get_response('https://www.reddit.com/' + self.submission.subreddit +
+                                '/comments/' + self.submission.id + '/.compact?limit=' +
+                                str(self.max_items))
         return get_lxml_from_response(response)
-
-    def _get_submission_url(self):
-        url = ('https://www.reddit.com/' + self.submission.subreddit + '/comments/' +
-               self.submission.id + '/.compact?limit=' + str(self.max_items))
-        return url
