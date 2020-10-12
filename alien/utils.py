@@ -8,7 +8,6 @@ import re
 from lxml import etree
 import lxml.html
 import gzip
-import traceback
 
 
 def return_on_error(method):
