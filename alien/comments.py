@@ -1,5 +1,5 @@
 from .utils import (get_timestamp_from_text, get_lxml_from_response, get_element_id, get_request,
-                    get_fixed_subreddit, IterableResults)
+                    get_fixed_subreddit, IterableResults, return_on_error)
 import logging
 from urllib.request import urlopen
 
@@ -9,6 +9,7 @@ class Comment:
         self.element = element
 
     @property
+    @return_on_error
     def subreddit(self) -> str:
         return 'r/' + self.element.xpath("."
             + "/div[@class='entry unvoted']"
@@ -18,6 +19,7 @@ class Comment:
             .split("/")[2]
 
     @property
+    @return_on_error
     def submission_id(self) -> str:
         return self.element.xpath("."
             + "/div[@class='entry unvoted']"
@@ -27,11 +29,13 @@ class Comment:
             .split("/")[4]
 
     @property
+    @return_on_error
     def submission_title(self) -> str:
         return self.element.xpath("." +
                                   "/a[@class='title']/text()")[0].encode('utf-8').decode('utf-8')
 
     @property
+    @return_on_error
     def body(self) -> str:
         words = " ".join(text for text in self.element.xpath("." + "/div[@class='entry unvoted']" +
                                                              "/form[@class='usertext']" +
@@ -40,24 +44,18 @@ class Comment:
         return " ".join(words)
 
     @property
+    @return_on_error
     def id(self) -> str:
         return get_element_id(self.element)
 
     @property
+    @return_on_error
     def comment_id(self) -> str:
         return self.id
 
     @property
-    def url(self) -> str:
-        return 'https://reddit.com' + self.element.xpath(
-            "." + "/div[@class='entry unvoted']" + "/div[@class='clear options_expando hidden']" +
-            "/a" + "/@href")[1]
-
-    @property
+    @return_on_error
     def timestamp(self) -> int:
-        """ This function works only with a "thing" element of a given author
-        submissions page (it does not work with a certain submission endpoint)
-        """
         time_ago = self.element.xpath("."
             + "/div[@class='entry unvoted']"
             + "/div[@class='tagline']"
@@ -66,16 +64,21 @@ class Comment:
         return get_timestamp_from_text(time_ago)
 
     @property
+    @return_on_error
     def author(self) -> str:
-        try:
-            return self.element.xpath(
-                "." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" +
-                "/a[contains(@class, 'author')]/text()")[0].encode('utf-8').decode('utf-8')
-        # Post written by a deleted user
-        except IndexError:
-            return
+        return self.element.xpath("." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" +
+                                  "/a[contains(@class, 'author')]/text()")[0].encode(
+                                      'utf-8').decode('utf-8')
 
     @property
+    @return_on_error
+    def url(self) -> str:
+        return 'https://reddit.com' + self.element.xpath(
+            "." + "/div[@class='entry unvoted']" + "/div[@class='clear options_expando hidden']" +
+            "/a" + "/@href")[1]
+
+    @property
+    @return_on_error
     def profile_post(self) -> bool:
         split_subreddit = self.subreddit.split('_')
         return len(split_subreddit) > 1 and split_subreddit[1] == self.author

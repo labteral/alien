@@ -8,6 +8,17 @@ import re
 from lxml import etree
 import lxml.html
 import gzip
+import traceback
+
+
+def return_on_error(method):
+    def return_on_error_(self, *args, **kwargs):
+        try:
+            return method(self, *args, **kwargs)
+        except Exception:
+            return
+
+    return return_on_error_
 
 
 def get_random_user_agent():

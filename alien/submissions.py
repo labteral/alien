@@ -1,6 +1,6 @@
 from datetime import timezone
 from .utils import (get_element_id, get_lxml_from_response, get_request, get_fixed_subreddit,
-                    IterableResults)
+                    IterableResults, return_on_error)
 import dateutil.parser
 import logging
 from urllib.request import urlopen
@@ -12,20 +12,24 @@ class Submission:
         self._subreddit = subreddit
 
     @property
+    @return_on_error
     def title(self) -> str:
         return self.element.xpath("." + "/div[@class='entry unvoted']" + "/p[@class='title']" +
                                   "/a[@class='may-blank']" +
                                   "/text()")[0].encode('utf-8').decode('utf-8')
 
     @property
+    @return_on_error
     def id(self) -> str:
         return get_element_id(self.element)
 
     @property
+    @return_on_error
     def submission_id(self) -> str:
         return self.id
 
     @property
+    @return_on_error
     def subreddit(self) -> str:
         # Works only with the submissions page of a given author
         if self._subreddit:
@@ -45,6 +49,7 @@ class Submission:
             return
 
     @property
+    @return_on_error
     def timestamp(self) -> int:
         retrieved_datetime = self.element.xpath("." + "/div[@class='entry unvoted']" +
                                                 "/div[@class='tagline']" + "/span" +
@@ -54,6 +59,7 @@ class Submission:
             .replace(tzinfo=timezone.utc).timestamp())
 
     @property
+    @return_on_error
     def author(self) -> str:
         try:
             return self.element.xpath(
@@ -64,18 +70,21 @@ class Submission:
             return
 
     @property
+    @return_on_error
     def comments_count(self) -> int:
         return int(
             self.element.xpath("." + "/div[@class='commentcount']" + "/a" +
                                "/text()")[0].encode('utf-8').decode('utf-8'))
 
     @property
+    @return_on_error
     def score(self) -> int:
         return int(
             self.element.xpath("." + "/div[@class='entry unvoted']" + "/div[@class='tagline']" +
                                "/span" + "/span[@class='score unvoted']" + "/@title")[0])
 
     @property
+    @return_on_error
     def body(self) -> str:
         words = " ".join(text for text in self.element.xpath("." + "/div[@class='expando']" +
                                                              "/form[@class='usertext']" +
@@ -84,10 +93,12 @@ class Submission:
         return " ".join(words)
 
     @property
+    @return_on_error
     def url(self) -> str:
         return f'https://www.reddit.com/{self.subreddit}/comments/{self.id}/'
 
     @property
+    @return_on_error
     def profile_post(self) -> bool:
         split_subreddit = self.subreddit.split('_')
         return len(split_subreddit) > 1 and split_subreddit[1] == self.author
