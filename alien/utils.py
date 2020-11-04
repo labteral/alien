@@ -6,9 +6,15 @@ from datetime import timedelta, datetime
 import re
 from lxml import etree
 import lxml.html
-import urllib3
+from urllib3 import ProxyManager, PoolManager
+from os import environ
 
-session = urllib3.PoolManager()
+if 'HTTPS_PROXY' in environ:
+    session = ProxyManager(environ['HTTPS_PROXY'], maxsize=100, block=True)
+elif 'HTTP_PROXY' in environ:
+    session = ProxyManager(environ['HTTP_PROXY'], maxsize=100, block=True)
+else:
+    session = PoolManager(maxsize=100, block=True)
 
 
 def return_on_error(method):
