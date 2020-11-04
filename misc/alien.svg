@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 557 557" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-219.5,-351)">
+        <g transform="matrix(1,0,0,1,-885,-588)">
+            <g transform="matrix(1,0,0,1,-14,-13)">
+                <g transform="matrix(1,0,2.46519e-32,1,376.5,-203)">
+                    <path d="M742,1433.5C742,1279.79 866.792,1155 1020.5,1155C1174.21,1155 1299,1279.79 1299,1433.5L742,1433.5Z"/>
+                </g>
+                <g transform="matrix(1.51733,9.46242e-17,-9.19186e-17,-0.723377,-577.809,2465.3)">
+                    <path d="M1485.05,1707L1485,1698.78L1301.5,1322L1118,1698.78L1117.95,1707L1485.05,1707Z"/>
+                </g>
+            </g>
+            <g transform="matrix(0.91921,0,0,0.91921,98.8636,86.412)">
+                <g transform="matrix(1,0,2.46519e-32,1,376.5,-203)">
+                    <path d="M742,1433.5C742,1279.79 866.792,1155 1020.5,1155C1174.21,1155 1299,1279.79 1299,1433.5L742,1433.5Z" style="fill:white;"/>
+                </g>
+                <g transform="matrix(1.51733,9.46242e-17,-9.19186e-17,-0.723377,-577.809,2465.3)">
+                    <path d="M1485.05,1707L1485,1698.78L1301.5,1322L1118,1698.78L1117.95,1707L1485.05,1707Z" style="fill:white;"/>
+                </g>
+            </g>
+            <g transform="matrix(0.973552,0,0,0.973552,30.3812,63.8623)">
+                <g transform="matrix(0.87292,0.871825,-1.33713,1.33881,2158.07,-1319.37)">
+                    <ellipse cx="1050.5" cy="1186.5" rx="41.5" ry="44.5" style="fill:rgb(255,79,1);"/>
+                </g>
+                <g transform="matrix(0.87292,-0.871825,-1.33713,-1.33881,1959.65,3689.32)">
+                    <ellipse cx="1050.5" cy="1186.5" rx="41.5" ry="44.5" style="fill:rgb(255,79,1);"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

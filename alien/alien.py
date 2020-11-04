@@ -9,11 +9,39 @@ from .utils import get_random_user_agent, get_fixed_subreddit
 from .submissions import Submission, UserSubmissions, SubredditSubmissions
 from .comments import Comment, UserComments, SubredditComments, SubmissionComments
 
+# TODO add instance parameters
+# TODO avoid repeated items on stream methods
+
 
 class Alien:
     def __init__(self):
-        pass  # TODO
+        pass
 
+    # All posts ################################################################
+    def get_subreddit_posts(self, subreddit):
+        yield from self.get_subreddit_submissions(subreddit)
+        yield from self.get_subreddit_comments(subreddit)
+
+    def get_posts(self):
+        return self.get_subreddit_posts('all')
+
+    def get_user_posts(self, user):
+        yield from self.get_user_submissions(user)
+        yield from self.get_user_comments(user)
+
+    def stream_subreddit_posts(self, subreddit):
+        while True:
+            yield from self.get_subreddit_submissions(subreddit)
+            yield from self.get_subreddit_comments(subreddit)
+
+    def stream_posts(self):
+        return self.stream_subreddit_posts('all')
+
+    def stream_user_posts(self, user):
+        while True:
+            yield from self.get_user_posts(user)
+
+    # Submissions ##############################################################
     def get_subreddit_submissions(self, subreddit, max_items=100):
         subreddit = get_fixed_subreddit(subreddit)
         for submission in SubredditSubmissions(subreddit):
@@ -22,6 +50,28 @@ class Alien:
             except Exception:
                 continue
 
+    def get_submissions(self):
+        return self.get_subreddit_submissions('all')
+
+    def get_user_submissions(self, user):
+        for submission in UserSubmissions(user):
+            try:
+                yield submission
+            except Exception:
+                continue
+
+    def stream_subreddit_submissions(self, subreddit):
+        while True:
+            yield from self.get_subreddit_submissions(subreddit)
+
+    def stream_submissions(self):
+        return self.stream_subreddit_submissions('all')
+
+    def stream_user_submissions(self, user):
+        while True:
+            yield from self.get_user_submissions(user)
+
+    # Comments #################################################################
     def get_subreddit_comments(self, subreddit, max_items=100):
         subreddit = get_fixed_subreddit(subreddit)
         for comment in SubredditComments(subreddit):
@@ -30,47 +80,8 @@ class Alien:
             except Exception:
                 continue
 
-    def get_subreddit_texts(self, subreddit):
-        yield from self.get_subreddit_submissions(subreddit)
-        yield from self.get_subreddit_comments(subreddit)
-
-    def get_submissions(self):
-        return self.get_subreddit_submissions('all')
-
     def get_comments(self):
         return self.get_subreddit_submissions('all')
-
-    def get_texts(self):
-        return self.get_subreddit_texts('all')
-
-    def stream_subreddit_submissions(self, subreddit):
-        while True:
-            yield from self.get_subreddit_submissions(subreddit)
-
-    def stream_subreddit_comments(self, subreddit):
-        while True:
-            yield from self.get_subreddit_comments(subreddit)
-
-    def stream_subreddit(self, subreddit):
-        while True:
-            yield from self.get_subreddit_submissions(subreddit)
-            yield from self.get_subreddit_comments(subreddit)
-
-    def stream_submissions(self):
-        return self.stream_subreddit_submissions('all')
-
-    def stream_comments(self):
-        return self.stream_subreddit_submissions('all')
-
-    def stream(self):
-        return self.stream_subreddit('all')
-
-    def get_user_submissions(self, user):
-        for submission in UserSubmissions(user):
-            try:
-                yield submission
-            except Exception:
-                continue
 
     def get_submission_comments(self, submission):
         for comment in SubmissionComments(submission):
@@ -86,6 +97,13 @@ class Alien:
             except Exception:
                 continue
 
-    def get_user_texts(self, user):
-        yield from self.get_user_submissions(user)
-        yield from self.get_user_comments(user)
+    def stream_subreddit_comments(self, subreddit):
+        while True:
+            yield from self.get_subreddit_comments(subreddit)
+
+    def stream_comments(self):
+        return self.stream_subreddit_submissions('all')
+
+    def stream_user_comments(self, user):
+        while True:
+            yield from self.get_user_comments(user)
