@@ -10,7 +10,7 @@
 </p>
 
 <h3 align="center">
-<b>An unofficial Reddit SDK for Python</b>
+<b>Unofficial Python client for Reddit</b>
 </h3>
 
 <p align="center">
