@@ -26,7 +26,7 @@ pip install alien
 
 # Instantiation
 ```python
-from pygram import PyGram
+from alien import Alien
 
 alien = Alien()
 ```
