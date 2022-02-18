@@ -26,4 +26,8 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     python_requires=">=3.6",
-    install_requires=['dateutils'])  # Dependencies
+    install_requires=[
+        'lxml',
+        'urllib3',
+        'python-dateutil'
+    ])

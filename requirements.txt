@@ -1,1 +1,3 @@
-twine
+lxml
+urllib3
+python-dateutil
